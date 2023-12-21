@@ -1,0 +1,5 @@
+customtkinter==5.2.1
+darkdetect==0.8.0
+importlib-resources==6.1.1
+packaging==23.2
+tk==0.1.0
