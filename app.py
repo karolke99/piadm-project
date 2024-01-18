@@ -25,7 +25,7 @@ class App(customtkinter.CTk):
         self.working_dir = '...'
 
         self.title('Marching cubes 3D models')
-        self.geometry(f'{600}x{300}')
+        self.geometry(f'{800}x{400}')
 
         self.grid_columnconfigure((0, 0), weight=1)
         self.grid_rowconfigure(0, weight=1)
@@ -54,10 +54,41 @@ class App(customtkinter.CTk):
                                                                  command=self.select_working_dir)
         self.select_working_dir_button.grid(row=2, column=3, padx=10, pady=5)
 
-
         self.generate_model_button = customtkinter.CTkButton(master=self.frame, border_width=2, text='Show 3D model',
                                                              command=self.generate_model, state=tkinter.DISABLED)
         self.generate_model_button.grid(row=3, column=2, padx=10, pady=5)
+
+        self.more_options_label = customtkinter.CTkLabel(master=self.frame, text='More Options')
+        self.more_options_label.grid(row=4, column=2, padx=10, pady=5)
+
+        self.smoothing = customtkinter.BooleanVar(value=False)
+        self.switch_smoother = customtkinter.CTkSwitch(master=self.frame, text='Gaussian Smoothing', onvalue=True,
+                                                       offvalue=False, variable=self.smoothing)
+        self.switch_smoother.grid(row=5, column=1, padx=10, pady=5)
+
+        self.smooth_slider_value = customtkinter.DoubleVar(value=1.0)
+        self.smooth_slider_label = customtkinter.CTkLabel(master=self.frame, text='Standard deviation:')
+        self.smooth_slider_label.grid(row=5, column=2, padx=10, pady=5)
+        self.smooth_slider = customtkinter.CTkSlider(master=self.frame, from_=0, to=2,
+                                                     variable=self.smooth_slider_value)
+        self.smooth_slider.grid(row=5, column=3, padx=10, pady=5)
+        self.smooth_slider_value_label = customtkinter.CTkLabel(master=self.frame,
+                                                                textvariable=self.smooth_slider_value)
+        self.smooth_slider_value_label.grid(row=5, column=4, padx=10, pady=5)
+
+        self.median = customtkinter.BooleanVar(value=False)
+        self.switch_median = customtkinter.CTkSwitch(master=self.frame, text='Median filter', onvalue=True,
+                                                    offvalue=False, variable=self.median)
+        self.switch_median.grid(row=6, column=1, padx=10, pady=5)
+        self.median_slider_value = customtkinter.IntVar(value=2)
+        self.median_slider_label = customtkinter.CTkLabel(master=self.frame, text='Kernel size (N x N x N):')
+        self.median_slider_label.grid(row=6, column=2, padx=10, pady=5)
+        self.median_slider = customtkinter.CTkSlider(master=self.frame, from_=2, to=5,
+                                                     variable=self.median_slider_value)
+        self.median_slider.grid(row=6, column=3, padx=10, pady=5)
+        self.median_slider_value_label = customtkinter.CTkLabel(master=self.frame,
+                                                                textvariable=self.median_slider_value)
+        self.median_slider_value_label.grid(row=6, column=4, padx=10, pady=5)
 
     def select_background_color(self):
         _, self.background_color = askcolor(title='Select color')
@@ -73,7 +104,6 @@ class App(customtkinter.CTk):
 
     def select_working_dir(self):
         self.working_dir = askdirectory(title='Select directory')
-        print(type(self.working_dir))
         if self.working_dir not in [(), None, '', '...']:
             self.generate_model_button.configure(state=tkinter.NORMAL)
 
@@ -82,7 +112,9 @@ class App(customtkinter.CTk):
     def generate_model(self):
         rgb_background_color = convert_hex_to_rgb(self.background_color)
         rgb_model_color = convert_hex_to_rgb(self.model_color)
-        mw = ModelViewer(rgb_background_color, rgb_model_color, self.working_dir)
+        mw = ModelViewer(rgb_background_color, rgb_model_color, self.working_dir, self.smoothing.get(),
+                         self.smooth_slider_value.get(),
+                         self.median.get(), self.median_slider_value.get())
 
 
 if __name__ == '__main__':

@@ -1,7 +1,12 @@
 # piadm-project
 
-dataset:
-https://github.com/sachin-vs/3D-reconstruction-from-CT-DICOM-using-python-VTK
+0. Clone this repo.
+1. Install requirements.
+    ```cmd
+    $ pip3 install -r requirements.txt
+    ```
+2. Run app.py.
+    ```cmd
+   $ python3 app.py
+    ```
 
-todo:
-ograniczenie zakresów jasności - najpierw odczytać jasność a potem ją dostosować
